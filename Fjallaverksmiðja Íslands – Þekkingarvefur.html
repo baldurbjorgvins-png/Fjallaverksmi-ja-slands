@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="is"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="dark light"><title>Fjallaverksmiðja Íslands – Þekkingarvefur</title>
+<style>
+:root{--bg:#090B1F;--bg2:#171A35;--card:#222541;--p:#515BFF;--a:#515BFF;--t:#F8FAFC;--t2:#A1A7C2;--ok:#22c55e;--no:#ef4444;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#f4f5fb;--bg2:#e9ebf7;--card:#fff;--t:#0f1230;--t2:#5b6080}
+*{box-sizing:border-box}html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100%}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg2);display:flex;gap:6px;align-items:center;padding:8px 12px;overflow-x:auto}
+header b{white-space:nowrap;margin-right:6px;cursor:pointer}header button{white-space:nowrap}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg2);z-index:10}
+main{max-width:900px;margin:0 auto;padding:16px}
+button{font:inherit;color:var(--t);background:var(--card);border:1px solid #ffffff22;border-radius:12px;padding:9px 14px;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px);border-color:var(--p)}button.pri{background:var(--p);border:0;color:#fff}
+button.sel{outline:2px solid var(--p)}
+.card{background:var(--card);border-radius:20px;padding:18px;margin:10px 0;animation:in .4s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.hero{padding:40px 0 24px;border-bottom:1px solid #ffffff14;margin-bottom:8px}.hero h1{font-size:clamp(1.8rem,6vw,3rem);margin:0 0 8px;color:var(--t);max-width:18ch;letter-spacing:-.01em}.i{width:18px;height:18px;vertical-align:-4px;flex:none}.ico{color:var(--p);margin-bottom:8px;display:block}.ico .i{width:28px;height:28px}
+.sub{color:var(--t2)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.tile{cursor:pointer;text-align:left}.tile:hover{transform:translateY(-3px)}.tile h3{margin:4px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.bar{height:8px;background:var(--bg2);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--p);transition:width .4s}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}.opt.ok{background:var(--ok);color:#fff;animation:pop .4s}.opt.no{background:var(--no);color:#fff;animation:shake .4s}
+@keyframes pop{50%{transform:scale(1.03)}}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.flip{perspective:900px;height:220px;cursor:pointer}.fi{position:relative;height:100%;transition:transform .6s;transform-style:preserve-3d}.flip.on .fi{transform:rotateY(180deg)}
+.fc{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--p);font-size:1.2rem}.fc.b{transform:rotateY(180deg);background:var(--p);color:#fff}
+input,select{font:inherit;color:var(--t);background:var(--card);border:1px solid #ffffff33;border-radius:12px;padding:10px;width:100%}
+.big{font-size:3rem;font-weight:800}small{color:var(--t2)}.tag{display:inline-block;background:var(--bg2);border-radius:9px;padding:1px 8px;margin:2px;font-size:.8rem;color:var(--t2)}
+</style></head><body><header id="nav"></header><main id="app"></main>
+<script>
+const $=s=>document.getElementById(s),app=$('app');
+const P={target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',layers:'<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>',check:'<path d="M20 6 9 17l-5-5"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',shuffle:'<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',mountain:'<path d="m3 20 6-10 4 6 3-4 5 8z"/>',contrast:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18"/>'};
+const IC=k=>`<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k]||''}</svg>`;
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+const CAT={P:'Persónur',S:'Staðir',A:'Atburðir',T:'Sambönd og vinátta',F:'Fjallaverksmiðjan',U:'Auðólfur',N:'Náttúra og umhverfi',D:'Smáatriði',L:'Lok bókarinnar'};
+const DIF=['','Auðvelt','Miðlungs','Erfitt','Sérfræðingur'];
+// SPURNINGABANKI – [spurning, rétt svar, [3 röng], flokkur, erfiðleiki, bls.] Allt úr námshandbók/skjáskotum.
+const R=[
+['Hvað heitir aðalpersónan?','Emma',['Lóa','Fríða','Ása'],'P',1],
+['Hvað heitir mamma Emmu?','Ása',['Gerða','Karítas','Dídda'],'P',1],
+['Hvað heitir Móri í raun?','Magnús Fells',['Magnús Mar','Friðrik Fells','Jökull Fells'],'P',2],
+['Hvaðan kemur Fitz?','Patagóníu í Suður-Ameríku',['Alaska í Bandaríkjunum','Svíþjóð','Grikklandi'],'S',1,'38–40'],
+['Hvaðan er Fríða?','Alaska í Bandaríkjunum',['Patagóníu','Tenerife','Ástralíu'],'S',1,'60–63'],
+['Hver fann upp nafnið Fjallaverksmiðjan?','Lóa',['Emma','Móri','Fríða'],'F',1],
+['Hver reyndi að kaupa Fjallaverksmiðjuna?','Auðólfur',['Stjáni','Rattle','Freyr'],'U',1,'208–209'],
+['Hvar finnst Emma meðvitundarlaus í upphafi bókar?','Í kajak á Jökulsárlóni',['Í skálanum við Breiðamerkurjökul','Í Skaftafelli','Á Höfn'],'A',1,'11–14'],
+['Hver finnur Emmu meðvitundarlausa?','Móri',['Stjáni','Jökull','Danni'],'A',1,'11–14'],
+['Hver tekur eftir að rauðan kajak vantar?','Stjáni',['Móri','Karítas','Gerða'],'A',2,'11–14'],
+['Hvað flytur Emmu til Reykjavíkur?','Þyrla Landhelgisgæslunnar',['Sjúkrabíll','Flugvél','Bátur'],'A',2,'15–17'],
+['Hvað birtir Emma í myndbandi í upphafi bókar?','Myndband um loftslagsbreytingar og bráðnun jökla',['Uppskrift','Ferðadagbók','Auglýsingu fyrir Auðólf'],'N',2,'7'],
+['Hvað heitir lögreglukonan sem rannsakar slysið?','Karítas',['Dídda','Gerða','Eiríka'],'P',2,'46–49'],
+['Hver er Dídda?','Systir Ásu',['Systir Emmu','Móðir Lóu','Lögreglukona'],'T',3,'52'],
+['Hver kemur með slæma veðurspá í skólann?','Jökull',['Móri','Fitz','Danni'],'A',3,'25'],
+['Hvaðan leggur hópurinn af stað í ferðina?','Frá Höfn',['Frá Skaftafelli','Frá Reykjavík','Frá Jökulsárlóni'],'S',2,'26–29'],
+['Í hvaða bíl ferðast hópurinn?','Gula kafbílnum hennar Lóu',['Rauða jeppa Móra','Rútu Gerðu','Bíl Fitz'],'D',3,'26–29'],
+['Hvar finnur hópurinn skjól í óveðrinu?','Í gömlum jöklakönnunarskála við Breiðamerkurjökul',['Á Litla-Bergi','Í Skaftafelli','Í Breiðárbragga á Höfn'],'S',2,'30–33'],
+['Hvað prjónar Lóa sem hún vill varðveita?','Fjöll',['Peysur','Teppi','Sokka'],'D',2,'34–37'],
+['Hver stingur upp á samfélagi sem lifir í sátt við náttúruna?','Fríða',['Móri','Fitz','Eiríka'],'F',2,'34–37'],
+['Hvar ákveður hópurinn að stofna fríríki?','Í Breiðárbragga',['Í Skaftafelli','Á Litla-Bergi','Á Höfn'],'F',2,'68–69'],
+['Hvaða sumarstarf fær Jökull?','Landvörður í Skaftafelli',['Leiðsögumaður á Höfn','Kokkur í Reykjavík','Bátsstjóri á lóninu'],'D',3,'72–74'],
+['Hvað ætlar Auðólfur að reisa á Suðurlandi?','Upplifunarmiðstöð Íslands',['Hótel við Jökulsárlón','Skíðasvæði','Kaffistofu'],'U',2,'75–77'],
+['Hvað heitir ástralski auðkýfingurinn sem Auðólfur ræðir við?','Rattle',['Fells','Freyr','Nelson'],'U',3,'75–77'],
+['Hvar býr Gerða?','Á Litla-Bergi',['Í Skaftafelli','Á Höfn','Í Breiðárbragga'],'S',2,'81–83'],
+['Hvaða þekkti Gerða, afa Emmu?','Hödda Sæm',['Frey','Stjána','Rattle'],'T',3,'81–83'],
+['Hver er Freyr?','Faðir Eiríku',['Faðir Emmu','Bróðir Gerðu','Faðir Danna'],'T',3,'84–85'],
+['Hvað kennir Alex Fitz að útbúa?','Grænmetismúsöku',['Pitsu','Fiskisúpu','Lummur'],'D',3,'147–149'],
+['Frá hvaða landi er Alex?','Grikklandi',['Svíþjóð','Patagóníu','Ástralíu'],'P',2,'147–149'],
+['Hvað er Meraki?','Að leggja sál, kærleika og hluta af sjálfum sér í verk sín',['Að ferðast án flugs','Að selja hugmyndir','Að tína rusl'],'F',3,'152–153'],
+['Hver kynnir Meraki fyrir Fríðu?','Alex',['Lóa','Viktoría','Gerða'],'T',3,'152–153'],
+['Hversu lengi hafði Fríða verið í burtu þegar hún sneri aftur?','Í tvær vikur',['Í einn dag','Í viku','Í mánuð'],'D',3,'152–153'],
+['Hvaðan er Viktoría?','Frá Svíþjóð',['Frá Alaska','Frá Grikklandi','Frá Ástralíu'],'S',2,'158–162'],
+['Hvar vann Viktoría á hóteli?','Í Los Cristianos á Tenerife',['Í Reykjavík','Á Höfn','Í Patagóníu'],'S',3,'158–162'],
+['Hver tók ljósmyndirnar af Emmu sem hún vissi ekki um?','Danni',['Eiríka','Móri','Alex'],'A',2,'144–146'],
+['Hvað ræðir Emma við Eiríku í viðtali?','Bruggun',['Prjónaskap','Skíði','Ljósmyndun'],'D',3,'163–164'],
+['Hvað kallar Emma Lóu í kvöldfærslu sinni?','Fjallakonuna',['Prjónadrottninguna','Fjallavörðinn','Nafnið Lóa'],'D',4,'140–143'],
+['Hvaða viðurkenningu fær Móri?','Vetrajökul',['Sumarjökul','Gullfjallið','Ísbjörninn'],'D',4,'140–143'],
+['Hvað kallar Danni stóra rauða hundinn?','Flaming Burgundy',['Logi','Rauður','Burgundy Jökull'],'D',3,'192–193'],
+['Hvað kallar eigandinn hundinn?','Loga',['Flaming Burgundy','Nelson','Rauð'],'D',4,'194–195'],
+['Hver fer með bæn til Móðurjarðar áður en borðað er?','Fitz',['Lóa','Jökull','Gerða'],'P',3,'196–198'],
+['Hver hrósar krökkunum fyrir framtakið og vill ræða hugmyndir við þau?','Auðólfur',['Rattle','Freyr','Stjáni'],'U',2,'206–207'],
+['Hver segir að Emma verði að fá að vita af tilboði Auðólfs?','Fríða',['Móri','Lóa','Eiríka'],'T',4,'210–211'],
+['Hvað kom í ljós um hugmyndina að selja fjöllin?','Hún var upphaflega ádeila',['Hún var tilboð frá Rattle','Hún var hugmynd Gerðu','Hún var lygi Danna'],'A',4,'220–221'],
+['Hvað býður Auðólfur krökkunum gegn því að þau hætti við hugmynd sína?','Tvær milljónir króna',['Eina milljón króna','Fimm milljónir króna','Tíu milljónir króna'],'U',3,'256–257'],
+['Hvernig fellur Emma í vatnið við Jökulsárlón?','Hún hörfar undan þegar Auðólfur reynir að ná símanum og rennur niður jökulbrún',['Kajakinn hvolfir','Hún er hrint af Móra','Ísjaki brotnar undir henni'],'L',3,'231–233'],
+['Hvað finnur hópurinn með minningum sínum í lokin?','Kælibox',['Myndaalbúm','Dagbók','Gamalt kort'],'L',2,'268–271'],
+['Hvað leggja Fríða og Fitz í lófa Emmu?','Steinvölu og klakamola',['Blóm og stein','Prjónaða húfu','Ljósmynd og lykil'],'L',2,'278'],
+['Hvað hreyfist í lok bókarinnar?','Litli fingur vinstri handar',['Hægri fóturinn','Annað augað','Þumalfingur hægri handar'],'L',2,'278'],
+['Hvernig breytist afstaða Auðólfs í lokin?','Hann sér eftir ákvörðunum sínum og býðst til að styðja Fjallaverksmiðjuna',['Hann heldur áætlun sinni til streitu','Hann flytur til útlanda','Hann kaupir Litla-Berg'],'L',3,'275–276'],
+['Hver hvarf í tvær vikur?','Fríða',['Alex','Viktoría','Lóa'],'A',2,'152–153'],
+['Hver eldar matinn?','Fitz',['Móri','Danni','Gerða'],'D',2,'170–171'],
+['Hver ætlaði að taka rauða hundinn?','Danni',['Fitz','Móri','Jökull'],'A',3,'192–193'],
+['Hvað heitir gríski maðurinn?','Alex',['Fitz','Stjáni','Danni'],'P',1,'147–149'],
+['Hver hefur áhuga á bruggun?','Eiríka',['Lóa','Gerða','Fríða'],'D',2,'163–164'],
+['Hvert er áhugamál Lóu?','Að prjóna fjöll',['Að elda','Að brugga','Að mála'],'D',2,'140–143'],
+['Hvaða skóla voru sjömenningarnir í?','Framhaldsskóla Austur-Skaftafellssýslu',['Menntaskólann á Egilsstöðum','Fjölbrautaskóla Suðurlands','Framhaldsskólann á Höfn'],'S',2,'25']];
+const Q=R.map((r,i)=>({id:i+1,q:r[0],a:r[1],w:r[2],c:r[3],d:r[4],p:r[5]||null,v:true}));
+const expl=q=>`Rétt svar: ${q.a}.`+(q.p?` (Námshandbók, bls. ${q.p})`:'');
+// PERSÓNUR
+const CH=[['Emma','Aðalpersónan; talsmaður náttúruverndar sem tekur upp myndbönd og vill ekki selja hugsjónirnar. Slys hennar er miðpunktur spennunnar.','Móðir: Ása. Vinur og samstarfsmaður: Móri. Andstæðingur: Auðólfur.'],
+['Móri','Magnús Fells. Hugmyndaríkur, áberandi á samfélagsmiðlum og vill stækka verkefnið. Telur fjármagn geta þjónað góðum tilgangi.','Finnur Emmu í lóninu; deilir við hana um peninga; boðar Auðólf í heimsókn.'],
+['Lóa','Skapandi, prjónar fjöll og á nafnið Fjallaverksmiðjan. Spyr gagnrýninna spurninga um sölu náttúrunnar. Emma kallar hana fjallakonuna.','Á gula kafbílinn; vinnur um tíma fyrir Auðólf.'],
+['Fríða','Frá Alaska. Sterk tenging við náttúru og sjálfstæði; fer stundum ein á jökulinn. Tengist hugmyndinni um fríríkið og voninni í lokin.','Nátengd Fitz; leggur steinvölu í lófa Emmu.'],
+['Fitz','Frá Patagóníu. Hlýr og umhyggjusamur; eldar, hugsar um félagana og fer með bæn til Móðurjarðar.','Áhyggjufullur þegar Fríða hverfur; strítt vegna Alex.'],
+['Danni','Daníel. Tekur ljósmyndir af vinunum og er mikill dýravinur. Sorg hans sýnir viðkvæmni og umhyggju.','Tók myndirnar af Emmu; tók rauða hundinn.'],
+['Jökull','Skipulagður þátttakandi; sumarstarf sem landvörður í Skaftafelli.','Kemur með slæma veðurspá; opnar læsta geymslu.'],
+['Eiríka','Spyr gagnrýninna spurninga, tekur myndir og hefur áhuga á bruggun.','Faðir: Freyr.'],
+['Viktoría','Frá Svíþjóð. Kemur þreytt til Fjallaverksmiðjunnar eftir slæmar vinnuaðstæður á Tenerife og fær vinnu á kaffistofunni.','Fær skjól hjá krökkunum.'],
+['Ása','Móðir Emmu. Þarf að horfast í augu við óvissuna um líf dóttur sinnar.','Systir: Dídda. Dóttir: Emma.'],
+['Auðólfur Mar','Auðugur viðskiptamaður sem vill kaupa og stækka verkefnið í Upplifunarmiðstöð Íslands. Breytist eftir slysið og finnur til ábyrgðar.','Ræðir við Rattle; reynir að bjarga Emmu.'],
+['Gerða','Býr á Litla-Bergi, kom reið í skálann en leyfði krökkunum að vera. Styður þau og tengir hugmyndina við heimafólk.','Þekkti Hödda Sæm, afa Emmu.'],
+['Alex','Grískur ferðamaður sem ferðast án flugs og kynnir Meraki. Kennir Fitz grænmetismúsöku.','Gestur í Fjallaverksmiðjunni.'],
+['Karítas','Lögreglukona sem rannsakar slysið.','Segir Ásu fréttirnar.'],
+['Stjáni','Tengist ferðaþjónustu við Jökulsárlón; tekur eftir að rauðan kajak vantar.','Deilir við Móra um gróða af náttúrunni.']];
+// SÖGUÞRÁÐUR
+const PL=[['Upphaf og slysið','7–24','Bókin byrjar á afleiðingum slyssins: Emma finnst meðvitundarlaus í kajak á Jökulsárlóni, þyrla flytur hana til Reykjavíkur og lögreglan hefur rannsókn.','Frásögnin fer svo aftur í tímann (endurlit).'],
+['Ferðin og hugmyndin','25–45','Sjö ungmenni fara frá Höfn í óveðri og finna gamlan skála við Breiðamerkurjökul. Þar kviknar hugmynd um samfélag í sátt við náttúruna.','Þemu: sjálfbærni, samvinna, náttúruvernd.'],
+['Fríríkið og samfélagið','68–173','Hópurinn stofnar fríríki í Breiðárbragga, Gerða leyfir þeim að vera, gestir koma (Alex, Viktoría) og lífið gengur sinn gang. Deilt er um prjónavörur og peninga.','Árekstur milli hugsjóna og markaðsvæðingar.'],
+['Auðólfur og ágreiningurinn','203–233','Auðólfur vill kaupa Fjallaverksmiðjuna. Emma kemst að því að fundur var haldinn án hennar og deilir við Móra. Við Jökulsárlón neitar hún Auðólfi og fellur í vatnið.','Orsök: græðgi, leyndarmál og vantraust.'],
+['Eftirmálin og lokin','234–278','SPOILER','Emma í dvala, Auðólfur sér eftir ákvörðunum sínum, vinirnir koma með kæliboxið á sjúkrahúsið og litli fingur Emmu hreyfist. Endirinn er opinn en vonarríkur.']];
+// TÍMALÍNA
+const EV=[['Ferðin frá Höfn','Hópurinn leggur af stað í óveðri og finnur skjól í gömlum skála.','Lóa, Emma, Fitz, Fríða','30–33'],
+['Fríríkið kviknar','Hugmyndin um samfélag í sátt við náttúruna.','Fríða, Emma',null],
+['Gerða samþykkir dvölina','Krakkarnir skipuleggja daglegt líf og verkefni.','Gerða',null],
+['Emma birtir myndbönd','Fjallaverksmiðjan vekur athygli.','Emma',null],
+['Deilur um peninga','Ágreiningur um hvort hægt sé að afla fjár án þess að fórna hugsjónum.','Móri, Lóa',null],
+['Auðólfur kemur í heimsókn','Vill kaupa og stækka Fjallaverksmiðjuna.','Auðólfur, Móri','203–211'],
+['Emma og Móri rífast','Emma frétti af fundinum; deilt um græðgi og traust.','Emma, Móri','216–221'],
+['Myndband við lónið','Emma tekur upp myndband og hittir Auðólf.','Emma, Auðólfur','229–231'],
+['Emma fellur í vatnið','Hún hörfar undan þegar Auðólfur reynir að ná símanum.','Emma, Auðólfur','231–233'],
+['Emma finnst og er flutt á sjúkrahús','Lögreglan rannsakar atvikið.','Móri, Karítas',null],
+['Óvissa um heilsu Emmu','Vinirnir glíma við óvissu um Emmu og verkefnið.','Fríða, Lóa','263–267'],
+['Auðólfur sér eftir','Reynir að fá samning, finnur síðan fyrir samviskubiti.','Auðólfur','275–276'],
+['Vinirnir heimsækja Emmu','Kælibox, steinvala og klakamoli; litli fingur hreyfist.','Fríða, Fitz, Ása','277–278']];
+// STAÐA
+let S={ans:0,ok:0,known:[],hard:[],wrong:[],best:{},bt:{},last:null};
+try{Object.assign(S,JSON.parse(localStorage.getItem('fv')||'{}'))}catch(e){}
+const sv=()=>{try{localStorage.setItem('fv',JSON.stringify(S))}catch(e){}};
+const V={home:'Forsíða',quiz:'Spurningaleikir',flash:'Spjöld',chars:'Persónur',plot:'Söguþráður',time:'Tímalína',games:'Áskoranir',search:'Leit'};
+function nav(){$('nav').innerHTML='<b onclick="go(\'home\')">'+IC('mountain')+' Fjallaverksmiðjan</b>'+Object.keys(V).map(k=>`<button onclick="go('${k}')">${V[k]}</button>`).join('')+'<button onclick="tg()">'+IC('contrast')+'</button>'}
+function tg(){const r=document.documentElement;r.dataset.theme=r.dataset.theme=='light'?'dark':'light'}
+function go(v,x){clearInterval(G&&G.iv);window.scrollTo(0,0);VW[v](x)}
+let G=null;
+const bar=p=>`<div class="bar"><i style="width:${p}%"></i></div>`;
+const VW={
+home(){const T=[['quiz','target','Spurningaleikir','Krossaspurningar með erfiðleikastigum'],['flash','layers','Þekkingarspjöld','Snúðu og lærðu eftir flokkum'],['chars','users','Persónur','Alfræði og tengsl'],['plot','book','Söguþráður','Samantekt í köflum'],['time','clock','Tímalína','Atburðir og röðunarleikur'],['games','trophy','Þekkingaráskoranir','Sérfræðingur, satt/ósatt, hraðaspurningar']];
+app.innerHTML=`<div class="hero"><h1>Hversu vel þekkir þú Fjallaverksmiðju Íslands?</h1><p class="sub">Kannaðu persónurnar, rifjaðu upp ævintýrið og prófaðu þekkingu þína.</p><div class="row"><button class="pri" onclick="go('quiz')">Hefja spurningaleik</button><button onclick="go('flash')">Skoða þekkingarspjöld</button><button onclick="go('chars')">Kanna söguheiminn</button></div></div>
+<div class="card"><b>${Q.length} spurningar</b> · ${S.ans} svaraðar (${S.ok} réttar) · ${S.known.length} spjöld lærð${S.last?`<br><small>Síðasti leikur: ${S.last.t} – ${S.last.p}%</small>`:''}
+${S.last?`<div class="row"><button onclick="go('quiz')">Halda áfram</button><button onclick="rs()">Endurstilla framvindu</button></div>`:''}</div>
+<div class="grid">${T.map(t=>`<div class="card tile" onclick="go('${t[0]}')"><div class="ico">${IC(t[1])}</div><h3>${t[2]}</h3><small>${t[3]}</small></div>`).join('')}</div>`},
+quiz(){let n=10,d=0;window.sq=(a,b)=>{if(a)n=a;if(b!==undefined)d=b;document.querySelectorAll('[data-n]').forEach(e=>e.classList.toggle('sel',e.dataset.n==n));document.querySelectorAll('[data-d]').forEach(e=>e.classList.toggle('sel',e.dataset.d==d))};
+window.sg=()=>play({qs:sh(Q.filter(q=>!d||q.d==d)).slice(0,n),title:'Spurningaleikur'+(d?' – '+DIF[d]:''),mode:'q'});
+app.innerHTML=`<h2>Spurningaleikir</h2><div class="card"><b>Fjöldi spurninga</b><div class="row">${[10,20,50,100,999].map(x=>`<button data-n="${x}" onclick="sq(${x})">${x==999?'Allar':x}</button>`).join('')}</div><b>Erfiðleikastig</b><div class="row">${DIF.map((x,i)=>`<button data-d="${i}" onclick="sq(0,${i})">${x||'Allt'}</button>`).join('')}</div><small>Auðvelt: grunnstaðreyndir · Miðlungs: atburðir og tengsl · Erfitt: smáatriði · Sérfræðingur: nákvæm þekking.</small><br><br><button class="pri" onclick="sg()">Byrja</button></div>`;sq(10,0)},
+flash(){let cat='',deck=[],i=0;const mk=()=>{deck=sh(Q.filter(q=>!cat||q.c==cat));i=0;draw()};
+window.fc=c=>{cat=c;mk()};window.fl=()=>$('fl').classList.toggle('on');
+window.fk=k=>{const id=deck[i].id,a=k?S.known:S.hard,b=k?S.hard:S.known;if(!a.includes(id))a.push(id);const j=b.indexOf(id);if(j>=0)b.splice(j,1);sv();i++;draw()};
+function draw(){const q=deck[i];app.innerHTML=`<h2>Þekkingarspjöld</h2><select onchange="fc(this.value)"><option value="">Allir flokkar</option>${Object.keys(CAT).map(k=>`<option value="${k}"${k==cat?' selected':''}>${CAT[k]}</option>`).join('')}</select><div class="row"><button onclick="fc(cat)">${IC('shuffle')} Stokka</button></div>`+(q?`${bar(i/deck.length*100)}<small>${i+1} / ${deck.length}</small><div class="flip" id="fl" onclick="fl()"><div class="fi"><div class="fc">${q.q}</div><div class="fc b">${q.a}</div></div></div><div class="row"><button class="pri" onclick="fk(1)">${IC('check')} Kann þetta</button><button onclick="fk(0)">${IC('refresh')} Æfa aftur</button></div>`:`<div class="card">Búið! Þú fórst í gegnum öll spjöldin.</div>`)}
+window.fc=c=>{cat=c;mk()};mk()},
+chars(x){if(x!==undefined){const c=CH[x],qs=Q.filter(q=>q.q.includes(c[0].split(' ')[0])||q.a.includes(c[0].split(' ')[0]));
+app.innerHTML=`<button onclick="go('chars')">← Til baka</button><div class="card"><h2>${c[0]}</h2><p>${c[1]}</p><b>Tengsl og atburðir</b><p>${c[2]}</p>${qs.length?`<button class="pri" onclick="play({qs:sh(qs),title:'${c[0]}',mode:'q'})">Spurningaleikur um ${c[0]} (${qs.length})</button>`:''}</div>`;return}
+app.innerHTML=`<h2>Persónusafn</h2><div class="grid">${CH.map((c,i)=>`<div class="card tile" onclick="go('chars',${i})"><h3>${c[0]}</h3><small>${c[1].slice(0,90)}…</small></div>`).join('')}</div>
+<h3>Tengslakort</h3><div class="card"><svg viewBox="0 0 400 300" width="100%"><g stroke="#8B5CF6" stroke-width="1.5"><line x1="200" y1="150" x2="90" y2="60"/><line x1="200" y1="150" x2="310" y2="60"/><line x1="200" y1="150" x2="200" y2="270"/><line x1="200" y1="150" x2="60" y2="170"/><line x1="310" y1="60" x2="200" y2="270" stroke-dasharray="4"/></g><g fill="#515BFF"><circle cx="200" cy="150" r="30"/><circle cx="90" cy="60" r="24"/><circle cx="310" cy="60" r="28"/><circle cx="200" cy="270" r="22"/><circle cx="60" cy="170" r="22"/></g><g fill="#fff" font-size="12" text-anchor="middle"><text x="200" y="154">Emma</text><text x="90" y="64">Ása</text><text x="310" y="64">Auðólfur</text><text x="200" y="274">Móri</text><text x="60" y="174">Fríða</text></g><g fill="#A1A7C2" font-size="10" text-anchor="middle"><text x="130" y="95">móðir</text><text x="270" y="95">andstæðingur</text><text x="215" y="215">vinur/deilur</text></g></svg><small>Einfölduð mynd; sjá persónusíður fyrir nánari tengsl.</small></div>`},
+plot(){let L=0,sp=0;window.pl=(l,s)=>{if(l!==undefined)L=l;if(s)sp=1;d()};function d(){app.innerHTML=`<h2>Söguþráður</h2><div class="row"><button class="${L?'':'sel'}" onclick="pl(0)">Stutt</button><button class="${L?'sel':''}" onclick="pl(1)">Ítarleg</button></div>`+PL.map((p,i)=>{if(i==4&&!sp)return`<div class="card">${IC('alert')} <b>Spoiler!</b> Næsti hluti sýnir endi bókarinnar.<br><br><button onclick="pl(L,1)">Sýna endinn</button></div>`;const t=i==4?p[3]:p[2];return`<div class="card"><h3>${p[0]} <small>bls. ${p[1]}</small></h3><p>${L||i==4?t:t.split('. ')[0]+'.'}</p>${L&&i<4?`<p><small>${p[3]}</small></p>`:''}</div>`}).join('')}d()},
+time(){app.innerHTML=`<h2>Tímalína</h2><button class="pri" onclick="ord()">Raðaðu atburðunum</button>`+EV.map((e,i)=>`<div class="card" onclick="this.querySelector('.x').hidden^=1"><b>${i+1}. ${e[0]}</b>${e[3]?` <small>bls. ${e[3]}</small>`:''}<br><small>${e[1]}</small><div class="x" hidden><p>Persónur: ${e[2]}</p></div></div>`).join('')},
+games(){const ex=Q.filter(q=>q.d>=3);app.innerHTML=`<h2>Þekkingaráskoranir</h2><div class="grid">
+<div class="card tile" onclick="play({qs:sh(ex),title:'Sérfræðingaáskorun',mode:'q'})"><h3>${IC('trophy')} Ert þú sérfræðingur?</h3><small>${ex.length} erfiðar spurningar (hluti af spurningabankanum)</small></div>
+<div class="card tile" onclick="play({qs:sh(Q).slice(0,20),title:'Satt eða ósatt',mode:'tf'})"><h3>${IC('check')} Satt eða ósatt</h3><small>20 staðhæfingar</small></div>
+<div class="card tile" onclick="play({qs:sh(Q),title:'Hraðaspurningar',mode:'speed'})"><h3>${IC('zap')} Hraðaspurningar</h3><small>Eins margar og þú getur á 60 sekúndum</small></div>
+<div class="card tile" onclick="ord()"><h3>${IC('clock')} Raðaðu atburðunum</h3><small>Rétt tímaröð</small></div>
+<div class="card tile" onclick="wr()"><h3>${IC('refresh')} Æfa röng svör</h3><small>${S.wrong.length} spurningar</small></div></div>`},
+search(){app.innerHTML=`<h2>Leit</h2><input id="si" placeholder="Leitaðu, t.d. Auðólfur" oninput="sr(this.value)"><div id="sr"></div>`;window.sr=v=>{v=v.toLowerCase().trim();if(v.length<2){$('sr').innerHTML='';return}const m=s=>s.toLowerCase().includes(v);let h='';
+CH.forEach((c,i)=>{if(m(c.join(' ')))h+=`<div class="card tile" onclick="go('chars',${i})"><span class="tag">Persóna</span> <b>${c[0]}</b></div>`});
+PL.forEach(p=>{if(m(p.join(' ')))h+=`<div class="card"><span class="tag">Samantekt</span> <b>${p[0]}</b></div>`});
+EV.forEach(e=>{if(m(e.join(' ')))h+=`<div class="card"><span class="tag">Atburður</span> <b>${e[0]}</b><br><small>${e[1]}</small></div>`});
+Q.forEach(q=>{if(m(q.q+q.a))h+=`<div class="card"><span class="tag">Staðreynd</span> ${q.q}<br><b>${q.a}</b></div>`});$('sr').innerHTML=h||'<p class="sub">Ekkert fannst.</p>'}}};
+// LEIKJAVÉL
+function prep(q,m){if(m=='tf'){const t=Math.random()<.5;return{id:q.id,q:`${q.q} – ${t?q.a:q.w[0]}`,o:['Satt','Ósatt'],c:t?0:1,e:expl(q)}}const o=sh([q.a,...q.w]);return{id:q.id,q:q.q,o,c:o.indexOf(q.a),e:expl(q)}}
+function play(o){clearInterval(G&&G.iv);G={...o,qs:o.qs.map(q=>prep(q,o.mode)),i:0,sc:0,wr:[],t0:Date.now(),done:0};if(!G.qs.length){app.innerHTML='<div class="card">Engar spurningar.</div>';return}
+if(o.mode=='speed'){G.left=60;G.iv=setInterval(()=>{G.left--;const e=$('tm');if(e)e.textContent=G.left+' s';if(G.left<=0)fin()},1000)}q()}
+function q(){const x=G.qs[G.i];if(!x)return fin();window.scrollTo(0,0);app.innerHTML=`<h2>${G.title}</h2>${bar(G.mode=='speed'?G.left/.6:G.i/G.qs.length*100)}<small>${G.i+1} / ${G.qs.length} · ${G.sc} stig ${G.mode=='speed'?'· <span id="tm">'+G.left+' s</span>':''}</small><div class="card"><b>${x.q}</b>${x.o.map((t,i)=>`<button class="opt" onclick="an(${i},this)">${t}</button>`).join('')}<div id="ex"></div></div>`}
+function an(i,b){const x=G.qs[G.i];if(G.lock)return;G.lock=1;const ok=i==x.c;S.ans++;if(ok){S.ok++;G.sc++;S.wrong=S.wrong.filter(w=>w!=x.id)}else{G.wr.push(x);if(!S.wrong.includes(x.id))S.wrong.push(x.id)}G.done++;sv();
+document.querySelectorAll('.opt').forEach((e,j)=>{if(j==x.c)e.classList.add('ok');else if(j==i)e.classList.add('no')});
+const nx=()=>{G.lock=0;G.i++;q()};if(G.mode=='speed')setTimeout(nx,600);else{$('ex').innerHTML=`<p>${ok?IC('check')+' Rétt!':IC('x')+' Rangt.'} ${x.e}</p><button class="pri" onclick="G.lock=0;G.i++;q()">${G.i+1<G.qs.length?'Næsta':'Niðurstöður'}</button>`}}
+function rank(p){return p>=95?'Fjallaverksmiðjumeistari':p>=85?'Sérfræðingur':p>=70?'Vel að sér':p>=50?'Áhugamaður':'Nýliði'}
+function fin(){clearInterval(G.iv);G.lock=0;const n=G.mode=='speed'?G.done:G.qs.length,p=n?Math.round(G.sc/n*100):0,t=Math.round((Date.now()-G.t0)/1000);
+if(!S.best[G.title]||p>S.best[G.title])S.best[G.title]=p;S.last={t:G.title,p};sv();const txt=`Ég fékk ${p}% í „${G.title}“ á Fjallaverksmiðja Íslands – Þekkingarvefur og titilinn ${rank(p)}!`;
+window.shr=()=>{navigator.share?navigator.share({text:txt}).catch(()=>{}):navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>alert('Afritað!'))};const g=G;window.again=()=>play({qs:g.qs.map(x=>Q.find(y=>y.id==x.id)),title:g.title,mode:g.mode});
+app.innerHTML=`<div class="card" style="text-align:center"><div class="big">${p}%</div><h2>${rank(p)}</h2><p>${G.sc} af ${n} rétt · ${t} sek · besta: ${S.best[G.title]}%</p><div class="row" style="justify-content:center"><button class="pri" onclick="again()">Spila aftur</button>${G.wr.length?`<button onclick="wr()">Æfa röngu</button>`:''}<button onclick="shr()">Deila</button></div></div>${G.wr.length?'<h3>Röng svör</h3>'+G.wr.map(x=>`<div class="card">${x.q}<br><small>${x.e}</small></div>`).join(''):''}`}
+function wr(){const l=Q.filter(x=>S.wrong.includes(x.id));if(!l.length){app.innerHTML='<div class="card">Engin röng svör til að æfa.</div>';return}play({qs:sh(l),title:'Röng svör',mode:'q'})}
+function ord(){const k=Math.min(6,EV.length),idx=[...EV.keys()].sort(()=>Math.random()-.5).slice(0,k);const ans=[...idx].sort((a,b)=>a-b);let ch=[];
+window.pk=i=>{if(!ch.includes(i))ch.push(i);dr()};window.un=()=>{ch=[];dr()};
+function dr(){const done=ch.length==k,ok=done&&ch.every((v,i)=>v==ans[i]);app.innerHTML=`<h2>Raðaðu atburðunum</h2><small>Smelltu á atburðina í réttri tímaröð.</small>${idx.map(i=>`<button class="opt ${ch.includes(i)?'sel':''}" onclick="pk(${i})">${ch.includes(i)?ch.indexOf(i)+1+'. ':''}${EV[i][0]}</button>`).join('')}<div class="row"><button onclick="un()">Byrja aftur</button></div>${done?`<div class="card">${ok?IC('check')+' Rétt röð!':IC('x')+' Ekki alveg. Rétt röð: '+ans.map(i=>EV[i][0]).join(' → ')}<br><br><button class="pri" onclick="ord()">Nýr leikur</button></div>`:''}`}dr()}
+function rs(){if(confirm('Endurstilla alla framvindu?')){S={ans:0,ok:0,known:[],hard:[],wrong:[],best:{},bt:{},last:null};sv();go('home')}}
+nav();go('home');
+</script></body></html>
